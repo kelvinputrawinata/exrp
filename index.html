@@ -287,10 +287,10 @@
         selectPasal.innerHTML = '<option value="" disabled selected>-- Pilih Pasal Pelanggaran --</option>';
         
         for (const [id, data] of Object.entries(databasePasal)) {
-            // Filter kategori
+            
             if (kategoriPilihan !== "semua" && data.kategori !== kategoriPilihan) continue;
             
-            // Filter teks pencarian (cocokkan dengan kode pasal, nama pasal, atau deskripsi)
+            
             if (searchTerm !== "") {
                 const matchKode = id.toLowerCase().includes(searchTerm);
                 const matchNama = data.nama.toLowerCase().includes(searchTerm);
