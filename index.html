@@ -199,7 +199,7 @@
 
     <div class="total-box">
         <div class="summary-pasal">
-            <span>Pasal Dikenakan:</span>
+            <span>Dikenakan Pasal:</span>
             <strong id="ringkasanPasal">-</strong>
         </div>
 
@@ -308,7 +308,7 @@
         if (selectPasal.options.length === 1) {
             const noOption = document.createElement("option");
             noOption.disabled = true;
-            noOption.textContent = "❌ Tidak ada pasal yang cocok";
+            noOption.textContent = "Tidak ada pasal yang cocok";
             selectPasal.appendChild(noOption);
         }
     }
