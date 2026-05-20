@@ -35,13 +35,15 @@
             display: block;
             margin-bottom: 8px;
             color: #2c3e50;
+            font-weight: bold;
         }
-        select, button {
+        select, input, button {
             width: 100%;
             padding: 10px;
             font-size: 15px;
             border-radius: 5px;
             border: 1px solid #bdc3c7;
+            box-sizing: border-box;
         }
         button {
             background-color: #3498db;
@@ -55,8 +57,6 @@
         button:hover {
             background-color: #2980b9;
         }
-        
-
         .badge {
             display: inline-block;
             padding: 3px 8px;
@@ -69,6 +69,7 @@
         .badge-ringan { background-color: #f1c40f; color: #333; }
         .badge-sedang { background-color: #e67e22; }
         .badge-berat { background-color: #e74c3c; }
+        .badge-LaluLintas { background-color: #2ecc71; }
         
         .pasal-list {
             margin-top: 20px;
@@ -94,7 +95,6 @@
         .delete-btn:hover {
             background-color: #c0392b;
         }
-        
         .reset-btn {
             background-color: #95a5a6;
             width: 100%;
@@ -105,7 +105,6 @@
         .reset-btn:hover {
             background-color: #7f8c8d;
         }
-
         .total-box {
             background-color: #2c3e50;
             color: white;
@@ -147,12 +146,22 @@
             display: block;
             margin-top: 5px;
         }
+        .disclaimer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+        /* tambahan untuk search bar */
+        .search-input {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>👮‍♂️Kalkulator Pasal Kepolisian Exclusive👮‍♀️</h2>
+    <h2>👮‍♂️ Kalkulator Pasal Kepolisian Exclusive 👮‍♀️</h2>
 
     <div class="form-group">
         <label for="pilihKategori"><strong>1. Filter Kategori Pelanggaran:</strong></label>
@@ -165,14 +174,19 @@
     </div>
 
     <div class="form-group">
-        <label for="pilihPasal"><strong>2. Pilih Pasal Pelanggaran:</strong></label>
+        <label for="searchPasal"><strong>2. Cari Pasal (nama, deskripsi, kode):</strong></label>
+        <input type="text" id="searchPasal" class="search-input" placeholder="Ketikkan kata kunci..." oninput="filterPasal()">
+        
+        <label for="pilihPasal"><strong>3. Pilih Pasal Pelanggaran:</strong></label>
         <select id="pilihPasal">
-            </select>
+            <option value="" disabled selected>-- Pilih Pasal Pelanggaran --</option>
+        </select>
         <button onclick="tambahPasal()">➕ Tambah Pelanggaran</button>
     </div>
 
     <div class="pasal-list" id="daftarPasal">
-        </div>
+        <!-- Daftar pasal yang ditambahkan akan muncul di sini -->
+    </div>
 
     <button class="reset-btn" id="btnReset" onclick="resetKalkulator()">🔄 Kosongkan Daftar</button>
 
@@ -192,11 +206,9 @@
     <div class="disclaimer">
         <strong>Disclaimer:</strong> Ini adalah alat untuk mempermudah perhitungan hukuman yang ada di kota exclusive.
     </div>
-    
 </div>
 
 <script>
-
     const databasePasal = {
         // Ringan
         "1.1": { nama: "Pasal 1.1", deskripsi: "Tidak Membawa Kartu Identitas", maxBulan: 5, maxDenda: 15000, kategori: "Ringan" },
@@ -211,7 +223,6 @@
         "1.10": { nama: "Pasal 1.10", deskripsi: "Mencuri/Merusak Kendaraan", maxBulan: 10, maxDenda: 25000, kategori: "Ringan" },
         "1.11": { nama: "Pasal 1.11", deskripsi: "Perjudian/Taruhan", maxBulan: 5, maxDenda: 20000, kategori: "Ringan" },
         "1.12": { nama: "Pasal 1.12", deskripsi: "Pembobolan/Pencurian Rumah", maxBulan: 10, maxDenda: 75000, kategori: "Ringan" },
-
         // Berat
         "3.1": { nama: "Pasal 3.1", deskripsi: "Penyalahgunaan Teknologi", maxBulan: 20, maxDenda: 50000, kategori: "Berat" },
         "3.2": { nama: "Pasal 3.2", deskripsi: "Jual Beli Barang / Senjata Ilegal (Pengedar)", maxBulan: 30, maxDenda: 350000, kategori: "Berat" },
@@ -233,7 +244,6 @@
         "5.2": { nama: "Pasal 5.2", deskripsi: "Kepemilikan Narkotika Mentah >1500 Buah (BANDAR NARKOTIKA) - HUKUMAN MATI & PENGGELEDAHAN ASSET", maxBulan: 999, maxDenda: 5500000, kategori: "Berat" },
         "5.3": { nama: "Pasal 5.3", deskripsi: "Kepemilikan Narkotika Jadi >1000 Buah (BANDAR NARKOTIKA) - HUKUMAN MATI & PENGGELEDAHAN ASSET", maxBulan: 999, maxDenda: 6000000, kategori: "Berat" },
         "5.4": { nama: "Pasal 5.4", deskripsi: "Kepemilikan Uang Kotor >1.500.000 (PENGGELEDAHAN ASSET)", maxBulan: 110, maxDenda: 2500000, kategori: "Berat" },
-
         // Lalu Lintas
         "4.1": { nama: "Pasal 4.1", deskripsi: "Tidak Melengkapi Atribut Berkendara", maxBulan: 0, maxDenda: 50000, kategori: "LaluLintas" },
         "4.2": { nama: "Pasal 4.2", deskripsi: "Berkendara Tidak Sesuai Medan (KENDARAAN DISITA)", maxBulan: 0, maxDenda: 25000, kategori: "LaluLintas" },
@@ -253,57 +263,71 @@
 
     let pasalTerpilih = [];
 
-
     function formatUSD(angka) {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(angka);
     }
 
-
     function filterPasal() {
         const kategoriPilihan = document.getElementById("pilihKategori").value;
+        const searchTerm = document.getElementById("searchPasal").value.toLowerCase().trim();
         const selectPasal = document.getElementById("pilihPasal");
         
-
         selectPasal.innerHTML = '<option value="" disabled selected>-- Pilih Pasal Pelanggaran --</option>';
-
+        
         for (const [id, data] of Object.entries(databasePasal)) {
-
-            if (kategoriPilihan === "semua" || data.kategori === kategoriPilihan) {
-                const option = document.createElement("option");
-                option.value = id;
-                option.textContent = `${data.nama} - ${data.deskripsi} (${data.maxBulan} Bln | ${formatUSD(data.maxDenda)})`;
-                selectPasal.appendChild(option);
+            // Filter kategori
+            if (kategoriPilihan !== "semua" && data.kategori !== kategoriPilihan) continue;
+            
+            // Filter teks pencarian (cocokkan dengan kode pasal, nama pasal, atau deskripsi)
+            if (searchTerm !== "") {
+                const matchKode = id.toLowerCase().includes(searchTerm);
+                const matchNama = data.nama.toLowerCase().includes(searchTerm);
+                const matchDeskripsi = data.deskripsi.toLowerCase().includes(searchTerm);
+                if (!(matchKode || matchNama || matchDeskripsi)) continue;
             }
+            
+            const option = document.createElement("option");
+            option.value = id;
+            option.textContent = `${data.nama} - ${data.deskripsi} (${data.maxBulan} Bln | ${formatUSD(data.maxDenda)})`;
+            selectPasal.appendChild(option);
+        }
+        
+        // Jika setelah filter tidak ada opsi, tambahkan pesan
+        if (selectPasal.options.length === 1) {
+            const noOption = document.createElement("option");
+            noOption.disabled = true;
+            noOption.textContent = "❌ Tidak ada pasal yang cocok";
+            selectPasal.appendChild(noOption);
         }
     }
 
-
-    window.onload = filterPasal;
-
+    window.onload = () => {
+        filterPasal();
+    };
 
     function getBadgeClass(kategori) {
         if (kategori === "Ringan") return "badge-ringan";
-        if (kategori === "Sedang") return "badge-sedang";
-        return "badge-LaluLintas";
+        if (kategori === "Berat") return "badge-berat";
+        if (kategori === "LaluLintas") return "badge-LaluLintas";
+        return "badge-sedang";
     }
 
     function tambahPasal() {
         const selectElement = document.getElementById("pilihPasal");
         const pasalId = selectElement.value;
-
-        if (!pasalId) {
-            alert("Silakan pilih pasal dari dropdown terlebih dahulu!");
+        
+        if (!pasalId || !databasePasal[pasalId]) {
+            alert("Silakan pilih pasal yang valid dari dropdown terlebih dahulu!");
             return;
         }
-
-        const dataPasal = databasePasal[pasalId];
         
+        const dataPasal = databasePasal[pasalId];
         pasalTerpilih.push({
-            id: Date.now(), 
-            kodePasal: pasalId, 
+            id: Date.now(),
+            kodePasal: pasalId,
             ...dataPasal
         });
-
+        
         renderDaftar();
     }
 
@@ -313,42 +337,40 @@
     }
 
     function resetKalkulator() {
-        const konfirmasi = confirm("Yakin ingin menghapus semua daftar pelanggaran tersangka?");
-        if (konfirmasi) {
-            pasalTerpilih = []; 
-            renderDaftar();     
+        if (confirm("Yakin ingin menghapus semua daftar pelanggaran tersangka?")) {
+            pasalTerpilih = [];
+            renderDaftar();
         }
     }
 
     function renderDaftar() {
         const daftarElement = document.getElementById("daftarPasal");
         const btnReset = document.getElementById("btnReset");
-        daftarElement.innerHTML = ""; 
-
+        daftarElement.innerHTML = "";
+        
         let totalBulan = 0;
         let totalDenda = 0;
-        let rekapPasal = []; 
-
+        let rekapPasal = [];
+        
         if (pasalTerpilih.length > 0) {
             btnReset.style.display = "block";
         } else {
             btnReset.style.display = "none";
         }
-
+        
         pasalTerpilih.forEach(pasal => {
             totalBulan += pasal.maxBulan;
-            totalDenda += pasal.maxDenda; 
-            
+            totalDenda += pasal.maxDenda;
             rekapPasal.push(pasal.kodePasal);
-
+            
             const badgeClass = getBadgeClass(pasal.kategori);
             const dendaInfo = `<br><small style="color: #27ae60; font-weight: bold;">Denda: ${formatUSD(pasal.maxDenda)}</small>`;
-
+            
             const item = document.createElement("div");
             item.className = "pasal-item";
             item.innerHTML = `
                 <div>
-                    <strong>${pasal.nama}</strong> 
+                    <strong>${pasal.nama}</strong>
                     <span class="badge ${badgeClass}">${pasal.kategori}</span><br>
                     <small style="color: #555;">${pasal.deskripsi}</small><br>
                     <small style="color: #c0392b; font-weight: bold;">Hukuman: ${pasal.maxBulan} Bulan</small>
@@ -358,20 +380,16 @@
             `;
             daftarElement.appendChild(item);
         });
-
+        
         if (rekapPasal.length > 0) {
             document.getElementById("ringkasanPasal").innerText = "Pasal " + rekapPasal.join(", ");
         } else {
             document.getElementById("ringkasanPasal").innerText = "-";
         }
-
+        
         document.getElementById("totalHukuman").innerText = `${totalBulan} Bulan`;
         document.getElementById("totalDenda").innerText = formatUSD(totalDenda);
     }
 </script>
-
 </body>
 </html>
-
-
-// By Dhywa Development - 2026
