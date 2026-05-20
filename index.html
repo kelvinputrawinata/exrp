@@ -152,7 +152,14 @@
             color: #7f8c8d;
             text-align: center;
         }
-        /* tambahan untuk search bar */
+
+        .watermark {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: left;
+        }
+        
         .search-input {
             margin-bottom: 10px;
         }
@@ -185,7 +192,7 @@
     </div>
 
     <div class="pasal-list" id="daftarPasal">
-        <!-- Daftar pasal yang ditambahkan akan muncul di sini -->
+        
     </div>
 
     <button class="reset-btn" id="btnReset" onclick="resetKalkulator()">🔄 Kosongkan Daftar</button>
@@ -208,6 +215,11 @@
     </div>
 </div>
 
+<div class="watermark">
+    <strong>Build Version:</strong> D2D 0.0.2BT 
+</div>
+</div>    
+    
 <script>
     const databasePasal = {
         // Ringan
@@ -292,7 +304,7 @@
             selectPasal.appendChild(option);
         }
         
-        // Jika setelah filter tidak ada opsi, tambahkan pesan
+        
         if (selectPasal.options.length === 1) {
             const noOption = document.createElement("option");
             noOption.disabled = true;
